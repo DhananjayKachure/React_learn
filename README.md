@@ -279,4 +279,85 @@ function Parent() {
 | `useLayoutEffect` | Synchronous DOM updates |
 | `useImperativeHandle` | Custom ref handling |
 
-Would you like **real-world examples** or **deeper explanations** for any specific hook?
+## **React Life Cycle**
+In functional components, React provides the useEffect hook to handle different lifecycle phases like mounting, updating, and unmounting.
+
+- ###  Mounting (Component Creation)
+This happens when the component first appears in the DOM.
+ Ideal for: API calls, event listeners, setting up subscriptions.
+```jsx
+import { useEffect } from "react";
+
+const MyComponent = () => {
+  useEffect(() => {
+    console.log("Component Mounted: Fetching data...");
+    
+    // Fetch data or perform any one-time action here
+
+  }, []); // Empty dependency array → Runs only ONCE when the component mounts
+
+  return <h1>Hello, World!</h1>;
+};
+```
+### what happens here
+- Runs only once when the component mounts
+- The empty dependency array [] ensures it does NOT run on updates.
+
+- ### Updating (Component Re-rendering)
+Happens when state or props change.
+Ideal for: Fetching new data when props/state change.
+
+```jsx
+import { useState, useEffect } from "react";
+
+const MyComponent = () => {
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    console.log("Component Updated: Count is now", count);
+  }, [count]); // Runs when `count` changes
+
+  return (
+    <div>
+      <p>Count: {count}</p>
+      <button onClick={() => setCount(count + 1)}>Increment</button>
+    </div>
+  );
+};
+```
+### what happens here
+- useEffect runs every time count changes.
+- This is similar to componentDidUpdate in class components.
+
+### Unmounting (Component Removal)
+Happens when the component is removed from the DOM.
+Ideal for: Cleaning up event listeners, intervals, or subscriptions.
+
+```jsx
+import { useEffect } from "react";
+
+const MyComponent = () => {
+  useEffect(() => {
+    console.log("Component Mounted");
+
+    return () => {
+      console.log("Component Unmounted: Cleanup here!");
+    };
+  }, []); // Runs once, cleanup runs when component unmounts
+
+  return <h1>Hello</h1>;
+};
+```
+### what happens here
+- return () => {} inside useEffect acts as the cleanup function.
+- It runs before the component is removed from the DOM.
+- Used for removing event listeners or stopping intervals.
+
+## **Summary of Hooks & Their Use Cases**  
+
+| Lifecycle | Functional Component |
+|------|---------|
+| `Mounting` | ```useEffect(() => {...}, [])``` |
+| `Updating` | ```useEffect(() => {...}, [dependencies])``` |
+| `Unmounting` | ```useEffect(() => { return () => {...} }, [])``` |
+
