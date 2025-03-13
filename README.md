@@ -1,4 +1,4 @@
-# React_learn
+# React
 
 ## why React
 React.js is a JavaScript library for building user interfaces (UIs), primarily for single-page applications (SPAs). React allows developers to create reusable UI components and efficiently manage the state of web applications.
@@ -360,4 +360,52 @@ const MyComponent = () => {
 | `Mounting` | ```useEffect(() => {...}, [])``` |
 | `Updating` | ```useEffect(() => {...}, [dependencies])``` |
 | `Unmounting` | ```useEffect(() => { return () => {...} }, [])``` |
+
+
+## Better Example Of Unmounting
+
+```jsx
+import { useState, useEffect, useCallback } from "react";
+
+const TimerComponent = () => {
+  const [time, setTime] = useState(0);
+  const [isRunning, setIsRunning] = useState(false);
+
+  useEffect(() => {
+    let interval;
+
+    if (isRunning) {
+      interval = setInterval(() => {
+        setTime((prevTime) => prevTime + 1);
+      }, 1000);
+    }
+
+    return () => clearInterval(interval); // Cleanup on unmount or stop
+  }, [isRunning]); // Runs effect when `isRunning` changes
+
+  const startTimer = useCallback(() => {
+    setIsRunning(true);
+  }, []);
+
+  const stopTimer = useCallback(() => {
+    setIsRunning(false);
+  }, []);
+
+  const resetTimer = useCallback(() => {
+    setIsRunning(false);
+    setTime(0);
+  }, []);
+
+  return (
+    <div style={{ textAlign: "center", padding: "20px" }}>
+      <h2>Timer: {time} seconds</h2>
+      <button onClick={startTimer} disabled={isRunning}>Start</button>
+      <button onClick={stopTimer} disabled={!isRunning}>Stop</button>
+      <button onClick={resetTimer}>Reset</button>
+    </div>
+  );
+};
+
+export default TimerComponent;
+```
 
